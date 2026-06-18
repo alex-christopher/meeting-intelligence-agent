@@ -1,0 +1,12 @@
+.venv/
+.mia/
+__pycache__/
+*.pyc
+
+.env
+.streamlit/secrets.toml
+credentials.json
+token.json
+meeting_intelligence.db
+
+.DS_Store
