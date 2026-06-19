@@ -20,6 +20,13 @@ class CompanyDetails(BaseModel):
     confidence: float = Field(description="Confidence from 0 to 1")
     reason: str = Field(description="Short explanation")
 
+def is_external_email(email: str) -> bool:
+    if "@" not in email:
+        return False
+
+    domain = email.split("@", 1)[1].strip().lower()
+
+    return domain not in PERSONAL_EMAIL_DOMAINS
 
 def extract_company_details(
         title: str,
@@ -54,4 +61,12 @@ def extract_company_details(
         {attendees}
     """
 
-    return structured_llm.invoke(prompt)
+    details = structured_llm.invoke(prompt)
+
+    details.external_attendees = [
+        email
+        for email in attendees
+        if is_external_email(email)
+    ]
+
+    return details
