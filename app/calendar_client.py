@@ -1,8 +1,11 @@
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+import os
+import json
 
 from google.auth.transport.requests import Request
+from google.oauth2 import service_account
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -11,14 +14,38 @@ from app.config import get_settings
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 
+def get_service_account_info() -> dict[str, Any] | None:
+    try:
+        import streamlit as st
+
+        if "GOOGLE_SERVICE_ACCOUNT" in st.secrets:
+            return dict(st.secrets["GOOGLE_SERVICE_ACCOUNT"])
+        
+    except Exception:
+        pass
+
+    raw_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+    if raw_json:
+        return json.loads(raw_json)
+    
+    return None
+
 def get_calendar():
     settings = get_settings()
+
+    service_account_info = get_service_account_info()
+
+    if service_account_info:
+        creds = service_account.Credentials.from_service_account_info(
+            service_account_info,
+            scopes=SCOPES,
+        )
+        return build("calendar", "v3", credentials=creds)
 
     credentials_path = Path(settings.google_credentials_file)
     token_path = Path(settings.google_token_file)
 
     creds = None
-
     if token_path.exists():
         creds = Credentials.from_authorized_user_file(str(token_path), SCOPES)
 
@@ -27,19 +54,23 @@ def get_calendar():
             creds.refresh(Request())
 
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(str(credentials_path), SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(
+                str(credentials_path),
+                SCOPES
+            )
 
             creds = flow.run_local_server(
-                        host="localhost",
-                        port=8080,
-                        authorization_prompt_message="Please visit this URL: {url}",
-                        success_message="Authentication complete. You can close this window.",
-                        open_browser=True,
-                    )
+                host="localhost",
+                port=8080,
+                authorization_prompt_message="Please visit this URL : {url}",
+                success_message="Authentication complete. You can close the window",
+                open_browser=True
+            )
 
         token_path.write_text(creds.to_json(), encoding="utf-8")
 
     return build("calendar", "v3", credentials=creds)
+
 
 
 def fetch_events(days_ahead: int | None = None) -> list[dict[str, Any]]:
@@ -53,7 +84,7 @@ def fetch_events(days_ahead: int | None = None) -> list[dict[str, Any]]:
 
     events = (
         service.events().list(
-            calendarId = "primary",
+            calendarId = settings.google_calendar_id,
             timeMin = now.isoformat(),
             timeMax = end.isoformat(),
             singleEvents = True,

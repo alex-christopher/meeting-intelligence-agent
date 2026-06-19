@@ -38,6 +38,11 @@ class Settings(BaseSettings):
         populate_by_name=True
     )
 
+    google_calendar_id: str = Field(
+        default="primary",
+        alias="GOOGLE_CALENDAR_ID"
+    )
+
     @property
     def database_file(self) -> Path:
         return Path(self.database_path)

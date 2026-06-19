@@ -10,3 +10,10 @@ token.json
 meeting_intelligence.db
 
 .DS_Store
+
+cerd.json
+*.json
+
+cerd.json
+credentials.json
+service-account.json
