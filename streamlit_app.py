@@ -74,7 +74,7 @@ try:
                 st.write(f"**External attendees:** {', '.join(details.external_attendees)}")
                 st.write(f"**Confidence:** {details.confidence}")
                 st.caption(details.reason)
-                 if st.button(
+                if st.button(
                     "Generate research brief",
                     key=f"research-{meeting['calendar_event_id']}",
                 ):
