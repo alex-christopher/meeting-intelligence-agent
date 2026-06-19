@@ -3,6 +3,7 @@ from streamlit_autorefresh import st_autorefresh
 
 from app.config import get_settings
 from app.calendar_client import fetch_events, normalize_events
+from app.company_details import extract_company_details
 
 
 st.set_page_config(
@@ -55,6 +56,26 @@ try:
             if meeting["description"]:
                 with st.expander("Description"):
                     st.write(meeting["description"])
+
+            with st.spinner("Agent extracting company details..."):
+                details = extract_company_details(
+                    title=meeting["title"],
+                    attendees=meeting["attendees"],
+                    description=meeting["description"],
+                )
+
+            st.divider()
+
+            if details.should_research:
+                st.write(f"**Company:** {details.company_name}")
+                st.write(f"**Domain:** {details.company_domain}")
+                st.write(f"**Primary contact:** {details.primary_contact_name}")
+                st.write(f"**External attendees:** {', '.join(details.external_attendees)}")
+                st.write(f"**Confidence:** {details.confidence}")
+                st.caption(details.reason)
+            else:
+                st.warning("Company could not be identified for this meeting.")
+                st.caption(details.reason)
 
 except Exception as exc:
     st.error("Could not fetch calendar events.")
