@@ -4,6 +4,7 @@ from streamlit_autorefresh import st_autorefresh
 from app.config import get_settings
 from app.calendar_client import fetch_events, normalize_events
 from app.company_details import extract_company_details
+from app.research_agent import run_company_research
 
 
 st.set_page_config(
@@ -73,6 +74,40 @@ try:
                 st.write(f"**External attendees:** {', '.join(details.external_attendees)}")
                 st.write(f"**Confidence:** {details.confidence}")
                 st.caption(details.reason)
+                 if st.button(
+                    "Generate research brief",
+                    key=f"research-{meeting['calendar_event_id']}",
+                ):
+                    with st.spinner("Research agent gathering live web signals..."):
+                        brief = run_company_research(
+                            company_name=details.company_name,
+                            company_domain=details.company_domain,
+                            meeting_title=meeting["title"],
+                            attendees=meeting["attendees"],
+                        )
+
+                    st.markdown("#### Company brief")
+                    st.write(brief.company_summary)
+
+                    st.markdown("#### Recent activity")
+                    for item in brief.recent_activity:
+                        st.write(f"- {item}")
+
+                    st.markdown("#### Tech signals")
+                    for item in brief.tech_signals:
+                        st.write(f"- {item}")
+
+                    st.markdown("#### Inferred pain points")
+                    for item in brief.pain_points:
+                        st.write(f"- {item}")
+
+                    st.markdown("#### Talking points")
+                    for item in brief.talking_points:
+                        st.write(f"- {item}")
+
+                    with st.expander("Sources"):
+                        for source in brief.sources:
+                            st.write(source)
             else:
                 st.warning("Company could not be identified for this meeting.")
                 st.caption(details.reason)

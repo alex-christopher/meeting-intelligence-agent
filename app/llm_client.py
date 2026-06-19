@@ -1,8 +1,8 @@
 from langchain_openai import ChatOpenAI
 
-from app.config import Settings
+from app.config import get_settings
 
-settings = Settings()
+settings = get_settings()
 
 def get_chat_model(temperature: float = 0) -> ChatOpenAI:
     if not settings.openai_api_key:
