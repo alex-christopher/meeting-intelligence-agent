@@ -9,16 +9,37 @@ from app.research_agent import run_company_research
 
 st.set_page_config(
     page_title="Meeting Intelligence Agent",
-    page_icon="📅",
+    page_icon="calendar",
     layout="wide",
 )
 
-st_autorefresh(interval=60_000,  key="calendar_refresh")
+live_monitoring = st.sidebar.checkbox("Live Monitoring", value=False)
+
+if live_monitoring:
+    refresh_tick = st_autorefresh(interval=60_000, key="calendar_refresh")
+else:
+    refresh_tick = 0
 
 st.title("Meeting Intelligence Agent")
 st.caption("Prototype dashboard for upcoming meeting briefs.")
 
 settings = get_settings()
+
+
+@st.cache_data(show_spinner=False)
+def load_meetings(refresh_tick: int):
+    raw_events = fetch_events()
+    return [normalize_events(event) for event in raw_events]
+
+
+@st.cache_data(show_spinner=False)
+def extract_details_cached(title: str, attendees: tuple[str, ...], description: str | None):
+    return extract_company_details(
+        title=title,
+        attendees=list(attendees),
+        description=description,
+    )
+
 
 with st.sidebar:
     st.header("Status")
@@ -32,12 +53,13 @@ with st.sidebar:
     )
 
     refresh_clicked = st.button("Refresh now", use_container_width=True)
+    if refresh_clicked:
+        load_meetings.clear()
 
 st.subheader("upcoming meetings")
 
 try:
-    raw_events = fetch_events()
-    meetings = [normalize_events(event) for event in raw_events]
+    meetings = load_meetings(refresh_tick)
 
     if not meetings:
         st.info("No upcoming meetings found for the calendar")
@@ -59,9 +81,9 @@ try:
                     st.write(meeting["description"])
 
             with st.spinner("Agent extracting company details..."):
-                details = extract_company_details(
+                details = extract_details_cached(
                     title=meeting["title"],
-                    attendees=meeting["attendees"],
+                    attendees=tuple(meeting["attendees"]),
                     description=meeting["description"],
                 )
 
