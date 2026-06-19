@@ -116,16 +116,16 @@ except Exception as exc:
     st.error("Could not fetch calendar events.")
     st.exception(exc)
 
-st.subheader("Configuration check")
+# st.subheader("Configuration check")
 
-st.write(
-    {
-        "openai_model": settings.openai_model,
-        "google_credentials_file": settings.google_credentials_file,
-        "google_token_file": settings.google_token_file,
-        "database_path": settings.database_path,
-        "calendar_days_ahead": settings.calendar_days_ahead,
-        "openai_key_loaded": bool(settings.openai_api_key),
-        "tavily_key_loaded": bool(settings.tavily_api_key),
-    }
-)
+# st.write(
+#     {
+#         "openai_model": settings.openai_model,
+#         "google_credentials_file": settings.google_credentials_file,
+#         "google_token_file": settings.google_token_file,
+#         "database_path": settings.database_path,
+#         "calendar_days_ahead": settings.calendar_days_ahead,
+#         "openai_key_loaded": bool(settings.openai_api_key),
+#         "tavily_key_loaded": bool(settings.tavily_api_key),
+#     }
+# )

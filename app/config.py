@@ -23,11 +23,6 @@ class Settings(BaseSettings):
         alias="GOOGLE_TOKEN_FILE"
     )
 
-    database_path: str = Field(
-        default="meetingintelligence.db",
-        alias="DATABASE_PATH"
-    )
-
     calendar_days_ahead: int = Field(
         default=7,
         alias="CALENDAR_DAYS_AHEAD"
@@ -42,10 +37,6 @@ class Settings(BaseSettings):
         default="primary",
         alias="GOOGLE_CALENDAR_ID"
     )
-
-    @property
-    def database_file(self) -> Path:
-        return Path(self.database_path)
     
 @lru_cache
 def get_settings() -> Settings:
