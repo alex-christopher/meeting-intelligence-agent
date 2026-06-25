@@ -9,9 +9,13 @@ from app.company_details import extract_company_details
 def direct_llm_call():
     company_details = extract_company_details
 
-    llm = get_chat_model(temperature=0.2)
-    structured_output = llm.with_structured_output(company_details)
-    return structured_output
+    llm = get_chat_model(temperature=0.8)
+    prompt = f"""
+                You need to provide a brief summary with the help pf the details that are provided from {company_details}
+    """
+    
+    llm_out = llm.invoke(prompt)
+    return llm_out
 
 class SearchSource(BaseModel):
     title: str

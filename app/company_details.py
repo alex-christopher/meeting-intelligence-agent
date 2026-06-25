@@ -63,12 +63,11 @@ def extract_company_details(
 
     details = structured_llm.invoke(prompt)
 
-    details.external_attendees = [
-        email
-        for email in attendees
-        if is_external_email(email)
-    ]
+    # details.external_attendees = [
+    #     email
+    #     for email in attendees
+    #     if is_external_email(email)
+    # ]
 
     return details
 
-    
