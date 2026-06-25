@@ -7,7 +7,7 @@ from app.company_details import extract_company_details
 
 
 def direct_llm_call():
-    company_details = extract_company_details
+    company_details = extract_company_details()
 
     llm = get_chat_model(temperature=0.8)
     prompt = f"""
