@@ -6,12 +6,11 @@ from app.llm_client import get_chat_model
 from app.company_details import extract_company_details
 
 
-def direct_llm_call():
-    company_details = extract_company_details()
+def direct_llm_call(meeting_title, attendees):
 
     llm = get_chat_model(temperature=0.8)
     prompt = f"""
-                You need to provide a brief summary with the help pf the details that are provided from {company_details}
+                You need to provide a brief summary with the help pf the details that are provided from Meeting title and attendees : {meeting_title, attendees}
     """
     
     llm_out = llm.invoke(prompt)

@@ -109,7 +109,8 @@ try:
                         #     attendees=meeting["attendees"],
                         # )
 
-                        brief = direct_llm_call()
+                        brief = direct_llm_call(meeting_title=meeting["title"],
+                                                attendees=meeting["attendees"])
                         st.write(brief)
 
                     # st.markdown("#### Company brief")
