@@ -4,7 +4,8 @@ from streamlit_autorefresh import st_autorefresh
 from app.config import get_settings
 from app.calendar_client import fetch_events, normalize_events
 from app.company_details import extract_company_details
-from app.research_agent import run_company_research
+from app.research_agent import run_company_research, direct_llm_call
+
 
 
 st.set_page_config(
@@ -101,12 +102,14 @@ try:
                     key=f"research-{meeting['calendar_event_id']}",
                 ):
                     with st.spinner("Research agent gathering live web signals..."):
-                        brief = run_company_research(
-                            company_name=details.company_name,
-                            company_domain=details.company_domain,
-                            meeting_title=meeting["title"],
-                            attendees=meeting["attendees"],
-                        )
+                        # brief = run_company_research(
+                        #     company_name=details.company_name,
+                        #     company_domain=details.company_domain,
+                        #     meeting_title=meeting["title"],
+                        #     attendees=meeting["attendees"],
+                        # )
+
+                        brief = direct_llm_call()
 
                     st.markdown("#### Company brief")
                     st.write(brief.company_summary)

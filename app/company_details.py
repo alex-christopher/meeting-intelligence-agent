@@ -70,3 +70,5 @@ def extract_company_details(
     ]
 
     return details
+
+    

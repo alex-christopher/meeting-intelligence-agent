@@ -3,6 +3,15 @@ from tavily import TavilyClient
 
 from app.config import get_settings
 from app.llm_client import get_chat_model
+from app.company_details import extract_company_details
+
+
+def direct_llm_call():
+    company_details = extract_company_details
+
+    llm = get_chat_model(temperature=0.2)
+    structured_output = llm.with_structured_output(company_details)
+    return structured_output
 
 class SearchSource(BaseModel):
     title: str
@@ -16,6 +25,8 @@ class ResearchBrief(BaseModel):
     pain_points: list[str] = Field(description="Inferred business or operational pain points")
     talking_points: list[str] = Field(description="Suggested talking points for the meeting")
     sources: list[str] = Field(description="Source URLs used")
+
+
 
 def run_company_research(
         company_name: str,
