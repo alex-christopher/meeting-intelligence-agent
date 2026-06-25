@@ -9,8 +9,9 @@ from app.company_details import extract_company_details
 def direct_llm_call(meeting_title, attendees):
 
     llm = get_chat_model(temperature=0.8)
+    llm_with_structured_output = llm.with_structured_output(ResearchBrief)
     prompt = f"""
-                You need to provide a brief summary with the help pf the details that are provided from Meeting title and attendees : {meeting_title, attendees}
+                You need to provide a brief summary with the help pf the details that are provided from Meeting title {meeting_title} and attendees {attendees} : {llm_with_structured_output}
     """
     
     llm_out = llm.invoke(prompt)
