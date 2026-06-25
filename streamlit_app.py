@@ -110,29 +110,30 @@ try:
                         # )
 
                         brief = direct_llm_call()
+                        st.write(brief)
 
-                    st.markdown("#### Company brief")
-                    st.write(brief.company_summary)
+                    # st.markdown("#### Company brief")
+                    # st.write(brief.company_summary)
 
-                    st.markdown("#### Recent activity")
-                    for item in brief.recent_activity:
-                        st.write(f"- {item}")
+                    # st.markdown("#### Recent activity")
+                    # for item in brief.recent_activity:
+                    #     st.write(f"- {item}")
 
-                    st.markdown("#### Tech signals")
-                    for item in brief.tech_signals:
-                        st.write(f"- {item}")
+                    # st.markdown("#### Tech signals")
+                    # for item in brief.tech_signals:
+                    #     st.write(f"- {item}")
 
-                    st.markdown("#### Inferred pain points")
-                    for item in brief.pain_points:
-                        st.write(f"- {item}")
+                    # st.markdown("#### Inferred pain points")
+                    # for item in brief.pain_points:
+                    #     st.write(f"- {item}")
 
-                    st.markdown("#### Talking points")
-                    for item in brief.talking_points:
-                        st.write(f"- {item}")
+                    # st.markdown("#### Talking points")
+                    # for item in brief.talking_points:
+                    #     st.write(f"- {item}")
 
-                    with st.expander("Sources"):
-                        for source in brief.sources:
-                            st.write(source)
+                    # with st.expander("Sources"):
+                    #     for source in brief.sources:
+                    #         st.write(source)
             else:
                 st.warning("Company could not be identified for this meeting.")
                 st.caption(details.reason)
